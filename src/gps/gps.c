@@ -35,6 +35,7 @@
 #include "math.h"
 #include "string.h"
 #include "stdio.h"
+#include "stdlib.h"
 
 #define D2R(x)              (float)((x) * 0.01745329251994f)    /*!< Degrees to radians */
 #define R2D(x)              (float)((x) * 57.29577951308232f)   /*!< Radians to degrees */
@@ -87,8 +88,8 @@ parse_double_number(gps_t* gh, const char* t) {
     if (t == NULL) {
         t = gh->p.term_str;
     }
-    sscanf(t, "%lf", &res);                     /* Parse number as double */
-    return (gps_float_t)res;                    /* Return casted value */
+    res = strtod(t, NULL);                      /* Parse string to double */
+    return (gps_float_t)res;                    /* Return casted value, based on float size */
 }
 
 /**
@@ -123,15 +124,15 @@ parse_term(gps_t* gh) {
             gh->p.stat = STAT_GGA; 
 #endif /* GPS_CFG_STATEMENT_GPGGA */
 #if GPS_CFG_STATEMENT_GPGSA 
-        } else if (strncmp(gh->p.term_str, "$GPGSA", 6) == 0) {
+        } else if (strncmp(gh->p.term_str, "$GPGSA", 6) == 0 || strncmp(gh->p.term_str, "$GNGSA", 6) == 0) {
             gh->p.stat = STAT_GSA;  
 #endif /* GPS_CFG_STATEMENT_GPGSA */
 #if GPS_CFG_STATEMENT_GPGSV
-        } else if (strncmp(gh->p.term_str, "$GPGSV", 6) == 0) {
+        } else if (strncmp(gh->p.term_str, "$GPGSV", 6) == 0 || strncmp(gh->p.term_str, "$GNGSV", 6) == 0) {
             gh->p.stat = STAT_GSV; 
 #endif /* GPS_CFG_STATEMENT_GPGSV */
 #if GPS_CFG_STATEMENT_GPRMC 
-        } else if (strncmp(gh->p.term_str, "$GPRMC", 6) == 0) {
+        } else if (strncmp(gh->p.term_str, "$GPRMC", 6) == 0 || strncmp(gh->p.term_str, "$GNRMC", 6) == 0) {
             gh->p.stat = STAT_RMC;
 #endif /* GPS_CFG_STATEMENT_GPRMC */
         } else {
@@ -220,13 +221,15 @@ parse_term(gps_t* gh) {
                     uint16_t value;
                     
                     index = 4 * (gh->p.data.gsv.stat_num - 1) + term_num / 4;   /* Get array index */
-                    value = (uint16_t)parse_number(gh, NULL);   /* Parse number as integer */
-                    switch (term_num % 4) {
-                        case 0: gh->sats_in_view_desc[index].num = value; break;
-                        case 1: gh->sats_in_view_desc[index].elevation = value; break;
-                        case 2: gh->sats_in_view_desc[index].azimuth = value; break;
-                        case 3: gh->sats_in_view_desc[index].snr = value; break;
-                        default: break;
+                    if (index < sizeof(gh->sats_in_view_desc) / sizeof(gh->sats_in_view_desc[0])) {
+                        value = (uint16_t)parse_number(gh, NULL);   /* Parse number as integer */
+                        switch (term_num % 4) {
+                            case 0: gh->sats_in_view_desc[index].num = value; break;
+                            case 1: gh->sats_in_view_desc[index].elevation = value; break;
+                            case 2: gh->sats_in_view_desc[index].azimuth = value; break;
+                            case 3: gh->sats_in_view_desc[index].snr = value; break;
+                            default: break;
+                        }
                     }
                 }
 #endif /* GPS_CFG_STATEMENT_GPGSV_SAT_DET */
