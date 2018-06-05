@@ -63,12 +63,16 @@
  */
 static int
 parse_number(gps_t* gh, const char* t) {
-    int res;
+    int res = 0;
+    uint8_t minus = 0;
     if (t == NULL) {
         t = gh->p.term_str;
     }
-    sscanf(t, "%d", &res);                      /* Parse number as integer */
-    return res;
+    minus = (*t == '-' ? (t++, 1) : 0);
+    while (t != NULL && CIN(*t)) {
+        res = 10 * res + CTN(*t++);
+    }
+    return minus ? -res : res;
 }
 
 /**
@@ -79,7 +83,7 @@ parse_number(gps_t* gh, const char* t) {
  */
 static gps_float_t
 parse_double_number(gps_t* gh, const char* t) {
-    double res;
+    double res = 0;
     if (t == NULL) {
         t = gh->p.term_str;
     }
@@ -92,7 +96,7 @@ parse_double_number(gps_t* gh, const char* t) {
  * 
  *                  NMEA output for latitude is ddmm.sss and longitude is dddmm.sss
  * \param[in]       gh: GPS handle
- * \return          Par
+ * \return          Latitude/Longitude value in degrees
  */
 static gps_float_t
 parse_lat_long(gps_t* gh) {
@@ -203,10 +207,30 @@ parse_term(gps_t* gh) {
 #if GPS_CFG_STATEMENT_GPGSV
     } else if (gh->p.stat == STAT_GSV) {        /* Process GPGSV statement */
         switch (gh->p.term_num) {
+            case 2:                             /* Current GPGSV statement number */
+                gh->p.data.gsv.stat_num = parse_number(gh, NULL);
             case 3:                             /* Process satellites in view */
                 gh->p.data.gsv.sats_in_view = parse_number(gh, NULL);
                 break;
-            default: break;
+            default:
+#if GPS_CFG_STATEMENT_GPGSV_SAT_DET
+                if (gh->p.term_num >= 4 && gh->p.term_num <= 19) {  /* Check current term number */
+                    uint8_t term_num = gh->p.term_num - 4;  /* Normalize term number from 4-19 to 0-15 */
+                    uint8_t index;
+                    uint16_t value;
+                    
+                    index = 4 * (gh->p.data.gsv.stat_num - 1) + term_num / 4;   /* Get array index */
+                    value = (uint16_t)parse_number(gh, NULL);   /* Parse number as integer */
+                    switch (term_num % 4) {
+                        case 0: gh->sats_in_view_desc[index].num = value; break;
+                        case 1: gh->sats_in_view_desc[index].elevation = value; break;
+                        case 2: gh->sats_in_view_desc[index].azimuth = value; break;
+                        case 3: gh->sats_in_view_desc[index].snr = value; break;
+                        default: break;
+                    }
+                }
+#endif /* GPS_CFG_STATEMENT_GPGSV_SAT_DET */
+                break;
         }
 #endif /* GPS_CFG_STATEMENT_GPGSV */
 #if GPS_CFG_STATEMENT_GPRMC

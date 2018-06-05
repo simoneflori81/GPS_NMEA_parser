@@ -72,8 +72,8 @@ gps_buff_free(gps_buff_t* buff) {
  */
 size_t
 gps_buff_write(gps_buff_t* buff, const void* data, size_t count) {
-	size_t i = 0;
-	size_t free;
+    size_t i = 0;
+    size_t free;
     const uint8_t* d = data;
     size_t tocopy;
 

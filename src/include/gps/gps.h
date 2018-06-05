@@ -40,31 +40,98 @@ extern "C" {
 #include "stdint.h"
 #include "stddef.h"
 
+/**
+ * \addtogroup          GPS_NMEA
+ * \defgroup            GPS_NMEA_CONFIG
+ * \brief               Default configuration setup
+ * \{
+ */
+
+/**
+ * \brief           Enables (1) or disables (0) `double precision` for floating point 
+ *                  values such as latitude, longitude, altitude
+ *
+ */
 #ifndef GPS_CFG_DOUBLE
 #define GPS_CFG_DOUBLE                      1
 #endif
 
+/**
+ * \brief           Enables (1) or disables (0) `GGA` statement parsing.
+ *
+ * \note            This statement must be enabled to parse:
+ *                      - Latitude, Longitude, Altitude
+ *                      - Number of satellites in use, fix (no fix, GPS, DGPS), UTC time
+ */
 #ifndef GPS_CFG_STATEMENT_GPGGA
 #define GPS_CFG_STATEMENT_GPGGA             1
 #endif
 
+/**
+ * \brief           Enables (1) or disables (0) `GSA` statement parsing.
+ *
+ * \note            This statement must be enabled to parse:
+ *                      - Position/Vertical/Horizontal dilution of precision
+ *                      - Fix mode (no fix, 2D, 3D fix
+ *                      - IDs of satellites in use
+ */
 #ifndef GPS_CFG_STATEMENT_GPGSA
 #define GPS_CFG_STATEMENT_GPGSA             1
 #endif
 
+/**
+ * \brief           Enables (1) or disables (0) `RMC` statement parsing.
+ *
+ * \note            This statement must be enabled to parse:
+ *                      - Validity of GPS signal
+ *                      - Ground speed in knots and coarse in degrees
+ *                      - Magnetic variation
+ *                      - UTC date
+ */
 #ifndef GPS_CFG_STATEMENT_GPRMC
 #define GPS_CFG_STATEMENT_GPRMC             1
 #endif
 
+/**
+ * \brief           Enables (1) or disables (0) `GSV` statement parsing.
+ *
+ * \note            This statement must be enabled to parse:
+ *                      - Number of satellites in view
+ *                      - Optionally details of each satellite in view. See \ref GPS_CFG_STATEMENT_GPGSV_SAT_DET
+ */
 #ifndef GPS_CFG_STATEMENT_GPGSV
 #define GPS_CFG_STATEMENT_GPGSV             1
 #endif
+
+/**
+ * \brief           Enables (1) or disables (0) detailed parsing of each
+ *                  satellite in view for $GPGSV statement.
+ *
+ * \note            When this feature is disabled, only "satellites in view" number is parsed
+ */
+#ifndef GPS_CFG_STATEMENT_GPGSV_SAT_DET
+#define GPS_CFG_STATEMENT_GPGSV_SAT_DET     0
+#endif
+
+/**
+ * \}
+ */
 
 #if GPS_CFG_DOUBLE                  
 typedef double gps_float_t;
 #else
 typedef float gps_float_t;
 #endif
+
+/**
+ * \brief           Satellite descriptor
+ */
+typedef struct {
+    uint8_t num;
+    uint8_t elevation;
+    uint16_t azimuth;
+    uint8_t snr;
+} gps_sat_t;
 
 /**
  * \brief           GPS main structure
@@ -94,6 +161,9 @@ typedef struct {
 #if GPS_CFG_STATEMENT_GPGSV || __DOXYGEN__
     /* Information related to GPGSV statement */
     uint8_t sats_in_view;                       /*!< Number of satellites in view */
+#if GPS_CFG_STATEMENT_GPGSV_SAT_DET || __DOXYGEN__
+    gps_sat_t sats_in_view_desc[12];
+#endif
 #endif /* GPS_CFG_STATEMENT_GPGSV || __DOXYGEN__ */
 
 #if GPS_CFG_STATEMENT_GPRMC || __DOXYGEN__
@@ -134,7 +204,7 @@ typedef struct {
 #endif /* GPS_CFG_STATEMENT_GPGSA */
 #if GPS_CFG_STATEMENT_GPGSV
             struct {
-                uint8_t sats_in_view;
+                uint8_t sats_in_view, stat_num;
             } gsv;
 #endif /* GPS_CFG_STATEMENT_GPGSV */
 #if GPS_CFG_STATEMENT_GPRMC
