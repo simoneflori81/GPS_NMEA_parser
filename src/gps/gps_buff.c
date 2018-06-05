@@ -67,15 +67,13 @@ gps_buff_free(gps_buff_t* buff) {
  * \brief           Write data to buffer
  * \param[in]       buff: Pointer to buffer structure
  * \param[in]       data: Pointer to data to copy memory from
- * \param[in]       count: Number of bytes we want to write
+ * \param[in]       count: Number of bytes to write
  * \return          Number of bytes actually written to buffer
  */
 size_t
 gps_buff_write(gps_buff_t* buff, const void* data, size_t count) {
-    size_t i = 0;
-    size_t free;
+    size_t i = 0, free, tocopy;
     const uint8_t* d = data;
-    size_t tocopy;
 
     if (buff == NULL || count == 0) {           /* Check buffer structure */
         return 0;
@@ -114,14 +112,13 @@ gps_buff_write(gps_buff_t* buff, const void* data, size_t count) {
  * \brief           Read data from buffer
  * \param[in]       buff: Pointer to buffer structure
  * \param[out]      data: Pointer to data to copy memory to
- * \param[in]       count: Number of bytes we want to read
+ * \param[in]       count: Number of bytes to read
  * \return          Number of bytes actually read and saved to data variable
  */
 size_t
 gps_buff_read(gps_buff_t* buff, void* data, size_t count) {
     uint8_t *d = data;
-    size_t i = 0, full;
-    size_t tocopy;
+    size_t i = 0, full, tocopy;
 
     if (buff == NULL || count == 0) {           /* Check buffer structure */
         return 0;
@@ -258,11 +255,11 @@ gps_buff_get_full(gps_buff_t* buff) {
  */
 void
 gps_buff_reset(gps_buff_t* buff) {
-	if (buff == NULL) {                         /* Check buffer structure */
-		return;
-	}
-	buff->in = 0;                               /* Reset values */
-	buff->out = 0;
+    if (buff == NULL) {                         /* Check buffer structure */
+        return;
+    }
+    buff->in = 0;                               /* Reset values */
+    buff->out = 0;
 }
 
 /**

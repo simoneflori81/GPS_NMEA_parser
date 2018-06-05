@@ -41,9 +41,15 @@ extern "C" {
 #include "stddef.h"
 
 /**
- * \addtogroup          GPS_NMEA
- * \defgroup            GPS_NMEA_CONFIG
- * \brief               Default configuration setup
+ * \defgroup        GPS_NMEA GPS NMEA parser
+ * \brief           Platform independent GPS NMEA parser
+ * \{
+ */
+
+/**
+ * \addtogroup      GPS_NMEA
+ * \defgroup        GPS_NMEA_CONFIG
+ * \brief           Default configuration setup
  * \{
  */
 
@@ -117,7 +123,11 @@ extern "C" {
  * \}
  */
 
-#if GPS_CFG_DOUBLE                  
+/**
+ * \brief           GPS float definition, can be either `float` or `double`
+ * \note            Check for \ref GPS_CFG_DOUBLE configuration
+ */
+#if GPS_CFG_DOUBLE || __DOXYGEN__                 
 typedef double gps_float_t;
 #else
 typedef float gps_float_t;
@@ -127,10 +137,10 @@ typedef float gps_float_t;
  * \brief           Satellite descriptor
  */
 typedef struct {
-    uint8_t num;
-    uint8_t elevation;
-    uint16_t azimuth;
-    uint8_t snr;
+    uint8_t num;                                /*!< Satellite number */
+    uint8_t elevation;                          /*!< Elevation value */
+    uint16_t azimuth;                           /*!< Azimuth in degrees */
+    uint8_t snr;                                /*!< Signal-to-noise ratio */
 } gps_sat_t;
 
 /**
@@ -218,6 +228,12 @@ typedef struct {
 #endif /* !__DOXYGEN__ */
 } gps_t;
 
+/**
+ * \brief           Check if current GPS data contain valid signal
+ * \note            \ref GPS_CFG_STATEMENT_GPRMC must be enabled and `GPRMC` statement must be sent from GPS receiver
+ * \param[in]       _gh: GPS handle
+ * \return          `1` on success, `0` otherwise
+ */
 #if GPS_CFG_STATEMENT_GPRMC || __DOXYGEN__
 #define gps_is_valid(_gh)           ((_gh)->is_valid)
 #else
@@ -257,6 +273,10 @@ uint8_t     gps_process(gps_t* gh, const void* data, size_t len);
 
 uint8_t     gps_distance_bearing(gps_float_t las, gps_float_t los, gps_float_t lae, gps_float_t loe, gps_float_t* d, gps_float_t* b);
 gps_float_t gps_to_speed(gps_float_t sik, gps_speed_t ts);
+
+/**
+ * \}
+ */
 
 #ifdef __cplusplus
 }
