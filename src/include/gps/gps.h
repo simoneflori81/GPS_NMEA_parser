@@ -48,13 +48,13 @@ extern "C" {
 
 /**
  * \addtogroup      GPS_NMEA
- * \defgroup        GPS_NMEA_CONFIG
+ * \defgroup        GPS_NMEA_CONFIG Default configuration
  * \brief           Default configuration setup
  * \{
  */
 
 /**
- * \brief           Enables (1) or disables (0) `double precision` for floating point 
+ * \brief           Enables (`1`) or disables (`0`) `double precision` for floating point 
  *                  values such as latitude, longitude, altitude
  *
  */
@@ -63,7 +63,7 @@ extern "C" {
 #endif
 
 /**
- * \brief           Enables (1) or disables (0) `GGA` statement parsing.
+ * \brief           Enables (`1`) or disables (`0`) `GGA` statement parsing.
  *
  * \note            This statement must be enabled to parse:
  *                      - Latitude, Longitude, Altitude
@@ -74,11 +74,11 @@ extern "C" {
 #endif
 
 /**
- * \brief           Enables (1) or disables (0) `GSA` statement parsing.
+ * \brief           Enables (`1`) or disables (`0`) `GSA` statement parsing.
  *
  * \note            This statement must be enabled to parse:
  *                      - Position/Vertical/Horizontal dilution of precision
- *                      - Fix mode (no fix, 2D, 3D fix
+ *                      - Fix mode (no fix, 2D, 3D fix)
  *                      - IDs of satellites in use
  */
 #ifndef GPS_CFG_STATEMENT_GPGSA
@@ -86,7 +86,7 @@ extern "C" {
 #endif
 
 /**
- * \brief           Enables (1) or disables (0) `RMC` statement parsing.
+ * \brief           Enables (`1`) or disables (`0`) `RMC` statement parsing.
  *
  * \note            This statement must be enabled to parse:
  *                      - Validity of GPS signal
@@ -99,21 +99,21 @@ extern "C" {
 #endif
 
 /**
- * \brief           Enables (1) or disables (0) `GSV` statement parsing.
+ * \brief           Enables (`1`) or disables (`0`) `GSV` statement parsing.
  *
  * \note            This statement must be enabled to parse:
  *                      - Number of satellites in view
- *                      - Optionally details of each satellite in view. See \ref GPS_CFG_STATEMENT_GPGSV_SAT_DET
+ *                      - Optional details of each satellite in view. See \ref GPS_CFG_STATEMENT_GPGSV_SAT_DET
  */
 #ifndef GPS_CFG_STATEMENT_GPGSV
 #define GPS_CFG_STATEMENT_GPGSV             1
 #endif
 
 /**
- * \brief           Enables (1) or disables (0) detailed parsing of each
+ * \brief           Enables (`1`) or disables (`0`) detailed parsing of each
  *                  satellite in view for $GPGSV statement.
  *
- * \note            When this feature is disabled, only "satellites in view" number is parsed
+ * \note            When this feature is disabled, only number of "satellites in view" is parsed
  */
 #ifndef GPS_CFG_STATEMENT_GPGSV_SAT_DET
 #define GPS_CFG_STATEMENT_GPGSV_SAT_DET     0

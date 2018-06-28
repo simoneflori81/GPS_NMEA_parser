@@ -48,7 +48,7 @@ extern "C" {
  */
  
 /**
- * \defgroup        GPS_NMEA_BUFFER
+ * \defgroup        GPS_NMEA_BUFFER Ring buffer
  * \brief           Optional ring buffer for received GPS data
  * \{
  */
