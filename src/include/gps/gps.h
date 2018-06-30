@@ -41,22 +41,17 @@ extern "C" {
 #include "stddef.h"
 
 /**
- * \defgroup        GPS_NMEA GPS NMEA parser
- * \brief           Platform independent GPS NMEA parser
- * \{
- */
-
-/**
  * \addtogroup      GPS_NMEA
- * \defgroup        GPS_NMEA_CONFIG Default configuration
+ * \defgroup        GPS_NMEA_CONFIG Configuration
  * \brief           Default configuration setup
  * \{
  */
 
 /**
  * \brief           Enables (`1`) or disables (`0`) `double precision` for floating point 
- *                  values such as latitude, longitude, altitude
+ *                  values such as latitude, longitude, altitude.
  *
+ *                  `double` is used as variable type when enabled, `float` when disabled.
  */
 #ifndef GPS_CFG_DOUBLE
 #define GPS_CFG_DOUBLE                      1
@@ -111,7 +106,7 @@ extern "C" {
 
 /**
  * \brief           Enables (`1`) or disables (`0`) detailed parsing of each
- *                  satellite in view for $GPGSV statement.
+ *                  satellite in view for `GSV` statement.
  *
  * \note            When this feature is disabled, only number of "satellites in view" is parsed
  */
@@ -121,6 +116,12 @@ extern "C" {
 
 /**
  * \}
+ */
+
+/**
+ * \defgroup        GPS_NMEA API functions
+ * \brief           Platform independent GPS NMEA parser
+ * \{
  */
 
 /**
