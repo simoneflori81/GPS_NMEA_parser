@@ -48,7 +48,7 @@ extern "C" {
  */
 
 /**
- * \brief           Enables (`1`) or disables (`0`) `double precision` for floating point 
+ * \brief           Enables `1` or disables `0` `double precision` for floating point 
  *                  values such as latitude, longitude, altitude.
  *
  *                  `double` is used as variable type when enabled, `float` when disabled.
@@ -58,7 +58,7 @@ extern "C" {
 #endif
 
 /**
- * \brief           Enables (`1`) or disables (`0`) `GGA` statement parsing.
+ * \brief           Enables `1` or disables `0` `GGA` statement parsing.
  *
  * \note            This statement must be enabled to parse:
  *                      - Latitude, Longitude, Altitude
@@ -69,7 +69,7 @@ extern "C" {
 #endif
 
 /**
- * \brief           Enables (`1`) or disables (`0`) `GSA` statement parsing.
+ * \brief           Enables `1` or disables `0` `GSA` statement parsing.
  *
  * \note            This statement must be enabled to parse:
  *                      - Position/Vertical/Horizontal dilution of precision
@@ -81,7 +81,7 @@ extern "C" {
 #endif
 
 /**
- * \brief           Enables (`1`) or disables (`0`) `RMC` statement parsing.
+ * \brief           Enables `1` or disables `0` `RMC` statement parsing.
  *
  * \note            This statement must be enabled to parse:
  *                      - Validity of GPS signal
@@ -94,7 +94,7 @@ extern "C" {
 #endif
 
 /**
- * \brief           Enables (`1`) or disables (`0`) `GSV` statement parsing.
+ * \brief           Enables `1` or disables `0` `GSV` statement parsing.
  *
  * \note            This statement must be enabled to parse:
  *                      - Number of satellites in view
@@ -105,7 +105,7 @@ extern "C" {
 #endif
 
 /**
- * \brief           Enables (`1`) or disables (`0`) detailed parsing of each
+ * \brief           Enables `1` or disables `0` detailed parsing of each
  *                  satellite in view for `GSV` statement.
  *
  * \note            When this feature is disabled, only number of "satellites in view" is parsed
