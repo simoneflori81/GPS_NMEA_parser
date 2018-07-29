@@ -335,7 +335,7 @@ gps_init(gps_t* gh) {
  * \brief           Process NMEA data from GPS receiver
  * \param[in]       gh: GPS handle structure
  * \param[in]       data: Received data
- * \param[in]       len: Number of bytes received from GPS receiver
+ * \param[in]       len: Number of bytes to process
  * \return          `1` on success, `0` otherwise
  */
 uint8_t

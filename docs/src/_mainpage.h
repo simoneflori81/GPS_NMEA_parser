@@ -16,8 +16,9 @@
  * - Low-level layer is separated from application layer, thus allows you to add custom communication with GPS device
  * - Free of charge
  *
- * \section         sect_resources Resources
+ * \section         sect_resources Download & Resources
  *
+ *  - <a class="download_url" href="https://github.com/MaJerle/GPS_NMEA_Parser/releases">Download library from Github releases</a>
  *  - <a href="https://github.com/MaJerle/GPS_NMEA_Parser">Official development repository on Github</a>
  *
  * \section         sect_license License
