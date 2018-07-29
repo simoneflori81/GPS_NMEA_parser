@@ -8,12 +8,13 @@
  *
  * - Platform independent, easy to port
  * - Written in ANSI C language
- * - Parser has built-in support for 4 GPS statements
- *    - GPGGA: GPS fix data
- *    - GPGSA: GPS active satellites and dillusion of position
- *    - GPGSV: List of satellites in view zone
- *    - GPRMC: Recommended minimum specific GPS/Transit data
+ * - Parser has built-in support for `4` GPS statements
+ *    - `GPGGA`: GPS fix data
+ *    - `GPGSA`: GPS active satellites and dillusion of position
+ *    - `GPGSV`: List of satellites in view zone
+ *    - `GPRMC`: Recommended minimum specific GPS/Transit data
  * - Low-level layer is separated from application layer, thus allows you to add custom communication with GPS device
+ * - Works with operating systems
  * - Free of charge
  *
  * \section         sect_resources Download & Resources
