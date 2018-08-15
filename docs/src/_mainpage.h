@@ -22,6 +22,11 @@
  *  - <a class="download_url" href="https://github.com/MaJerle/GPS_NMEA_Parser/releases">Download library from Github releases</a>
  *  - <a href="https://github.com/MaJerle/GPS_NMEA_Parser">Official development repository on Github</a>
  *
+ * \section         sect_contribute How to contribute
+ * 
+ *  - Official development repository is hosted on Github
+ *  - <a href="https://github.com/MaJerle/c_code_style">Respect C style and coding rules</a>
+ *
  * \section         sect_license License
  *
  * \verbatim        
