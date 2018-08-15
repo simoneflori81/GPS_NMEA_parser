@@ -1,5 +1,5 @@
 /**	
- * \file            esp_buff.h
+ * \file            gps_buff.h
  * \brief           Buffer manager
  */
  
