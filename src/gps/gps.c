@@ -69,6 +69,10 @@ parse_number(gps_t* gh, const char* t) {
     if (t == NULL) {
         t = gh->p.term_str;
     }
+    /* Strip leading spaces */
+    while (t != NULL && *t == ' ') {
+        t++;
+    }
     minus = (*t == '-' ? (t++, 1) : 0);
     while (t != NULL && CIN(*t)) {
         res = 10 * res + CTN(*t++);
