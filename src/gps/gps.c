@@ -88,6 +88,10 @@ parse_double_number(gps_t* gh, const char* t) {
     if (t == NULL) {
         t = gh->p.term_str;
     }
+    /* Strip leading spaces */
+    while (t != NULL && *t == ' ') {
+        t++;
+    }
     res = strtod(t, NULL);                      /* Parse string to double */
     return (gps_float_t)res;                    /* Return casted value, based on float size */
 }
