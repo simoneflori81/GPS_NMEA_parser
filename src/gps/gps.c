@@ -62,10 +62,11 @@
  * \param[in]       t: Text to parse. Set to `NULL` to parse current GPS term
  * \return          Parsed integer
  */
-static int
+static int32_t
 parse_number(gps_t* gh, const char* t) {
     int res = 0;
-    uint8_t minus = 0;
+    uint8_t minus;
+
     if (t == NULL) {
         t = gh->p.term_str;
     }
@@ -88,7 +89,8 @@ parse_number(gps_t* gh, const char* t) {
  */
 static gps_float_t
 parse_double_number(gps_t* gh, const char* t) {
-    double res = 0;
+    double res;
+
     if (t == NULL) {
         t = gh->p.term_str;
     }
@@ -110,6 +112,7 @@ parse_double_number(gps_t* gh, const char* t) {
 static gps_float_t
 parse_lat_long(gps_t* gh) {
     gps_float_t ll, deg, min;
+
     ll = parse_double_number(gh, NULL);         /* Parse value as double */
     deg = ((int)ll) / 100;                      /* Get absolute degrees value */
     min = ll - (deg * 100);                     /* Get remaining part, minutes */
@@ -176,10 +179,10 @@ parse_term(gps_t* gh) {
                 }
                 break;
             case 6:                             /* Fix status */
-                gh->p.data.gga.fix = parse_number(gh, NULL);
+                gh->p.data.gga.fix = (uint8_t)parse_number(gh, NULL);
                 break;
             case 7:                             /* Satellites in use */
-                gh->p.data.gga.sats_in_use = parse_number(gh, NULL);
+                gh->p.data.gga.sats_in_use = (uint8_t)parse_number(gh, NULL);
                 break;
             case 9:                             /* Altitude */
                 gh->p.data.gga.altitude = parse_double_number(gh, NULL);
@@ -194,7 +197,7 @@ parse_term(gps_t* gh) {
     } else if (gh->p.stat == STAT_GSA) {        /* Process GPGSA statement */
         switch (gh->p.term_num) {
             case 2:                             /* Process fix mode */
-                gh->p.data.gsa.fix_mode = parse_number(gh, NULL);
+                gh->p.data.gsa.fix_mode = (uint8_t)parse_number(gh, NULL);
                 break;
             case 15:                            /* Process PDOP */
                 gh->p.data.gsa.dop_p = parse_double_number(gh, NULL);
@@ -208,7 +211,7 @@ parse_term(gps_t* gh) {
             default:
                 /* Parse satellite IDs */
                 if (gh->p.term_num >= 3 && gh->p.term_num <= 14) {
-                    gh->p.data.gsa.satellites_ids[gh->p.term_num - 3] = parse_number(gh, NULL);
+                    gh->p.data.gsa.satellites_ids[gh->p.term_num - 3] = (uint8_t)parse_number(gh, NULL);
                 }
                 break;
         }
@@ -217,15 +220,15 @@ parse_term(gps_t* gh) {
     } else if (gh->p.stat == STAT_GSV) {        /* Process GPGSV statement */
         switch (gh->p.term_num) {
             case 2:                             /* Current GPGSV statement number */
-                gh->p.data.gsv.stat_num = parse_number(gh, NULL);
+                gh->p.data.gsv.stat_num = (uint8_t)parse_number(gh, NULL);
+                break;
             case 3:                             /* Process satellites in view */
-                gh->p.data.gsv.sats_in_view = parse_number(gh, NULL);
+                gh->p.data.gsv.sats_in_view = (uint8_t)parse_number(gh, NULL);
                 break;
             default:
 #if GPS_CFG_STATEMENT_GPGSV_SAT_DET
                 if (gh->p.term_num >= 4 && gh->p.term_num <= 19) {  /* Check current term number */
-                    uint8_t term_num = gh->p.term_num - 4;  /* Normalize term number from 4-19 to 0-15 */
-                    uint8_t index;
+                    uint8_t index, term_num = gh->p.term_num - 4;   /* Normalize term number from 4-19 to 0-15 */
                     uint16_t value;
                     
                     index = 4 * (gh->p.data.gsv.stat_num - 1) + term_num / 4;   /* Get array index */
@@ -248,7 +251,7 @@ parse_term(gps_t* gh) {
     } else if (gh->p.stat == STAT_RMC) {        /* Process GPRMC statement */
         switch (gh->p.term_num) {
             case 2:                             /* Process valid status */
-                gh->p.data.rmc.is_valid = gh->p.term_str[0] == 'A';
+                gh->p.data.rmc.is_valid = (uint8_t)(gh->p.term_str[0] == 'A');
                 break;
             case 7:                             /* Process ground speed in knots */
                 gh->p.data.rmc.speed = parse_double_number(gh, NULL);
@@ -257,9 +260,9 @@ parse_term(gps_t* gh) {
                 gh->p.data.rmc.coarse = parse_double_number(gh, NULL);
                 break;
             case 9:                             /* Process date */
-                gh->p.data.rmc.date = 10 * CTN(gh->p.term_str[0]) + CTN(gh->p.term_str[1]);
-                gh->p.data.rmc.month = 10 * CTN(gh->p.term_str[2]) + CTN(gh->p.term_str[3]);
-                gh->p.data.rmc.year = 10 * CTN(gh->p.term_str[4]) + CTN(gh->p.term_str[5]);
+                gh->p.data.rmc.date = (uint8_t)(10 * CTN(gh->p.term_str[0]) + CTN(gh->p.term_str[1]));
+                gh->p.data.rmc.month = (uint8_t)(10 * CTN(gh->p.term_str[2]) + CTN(gh->p.term_str[3]));
+                gh->p.data.rmc.year = (uint8_t)(10 * CTN(gh->p.term_str[4]) + CTN(gh->p.term_str[5]));
                 break;
             case 10:                            /* Process magnetic variation */
                 gh->p.data.rmc.variation = parse_double_number(gh, NULL);
@@ -279,7 +282,7 @@ parse_term(gps_t* gh) {
 static uint8_t
 check_crc(gps_t* gh) {
     uint8_t crc;
-    crc = ((CHTN(gh->p.term_str[0]) & 0x0F) << 0x04) | (CHTN(gh->p.term_str[1]) & 0x0F);    /* Convert received CRC from string (hex) to number */
+    crc = (uint8_t)((CHTN(gh->p.term_str[0]) & 0x0F) << 0x04) | (CHTN(gh->p.term_str[1]) & 0x0F);   /* Convert received CRC from string (hex) to number */
     return gh->p.crc_calc == crc;               /* They must match! */
 }
 
