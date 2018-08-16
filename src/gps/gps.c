@@ -359,7 +359,7 @@ gps_process(gps_t* gh, const void* data, size_t len) {
                 /* CRC is OK, in theory we can copy data from statements to user data */
                 copy_from_tmp_memory(gh);       /* Copy memory from temporary to user memory */
             }
-        } else if (*d != ' ') {                 /* Any other character which is not space */
+        } else {
             if (!gh->p.star) {                  /* Add to CRC only if star not yet detected */
                 CRC_ADD(gh, *d);                /* Add to CRC */
             }
