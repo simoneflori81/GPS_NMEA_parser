@@ -64,7 +64,7 @@
  */
 static int32_t
 parse_number(gps_t* gh, const char* t) {
-    int res = 0;
+    int32_t res = 0;
     uint8_t minus;
 
     if (t == NULL) {
