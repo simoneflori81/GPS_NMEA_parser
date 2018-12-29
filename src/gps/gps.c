@@ -48,7 +48,12 @@
 #define STAT_RMC            4
 
 #define CRC_ADD(_gh, ch)    (_gh)->p.crc_calc ^= (uint8_t)(ch)
-#define TERM_ADD(_gh, ch)   do { (_gh)->p.term_str[(_gh)->p.term_pos++] = (ch); (_gh)->p.term_str[(_gh)->p.term_pos] = 0; } while (0)
+#define TERM_ADD(_gh, ch)   do {    \
+    if ((_gh)->p.term_pos < (sizeof((_gh)->p.term_str) - 1)) {  \
+        (_gh)->p.term_str[(_gh)->p.term_pos++] = (ch);  \
+        (_gh)->p.term_str[(_gh)->p.term_pos] = 0;   \
+    }                               \
+} while (0)
 #define TERM_NEXT(_gh)      do { (_gh)->p.term_str[((_gh)->p.term_pos = 0)] = 0; (_gh)->p.term_num++; } while (0)
 
 #define CIN(x)              ((x) >= '0' && (x) <= '9')
