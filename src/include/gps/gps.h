@@ -30,8 +30,8 @@
  *
  * Author:          Tilen MAJERLE <tilen@majerle.eu>
  */
-#ifndef __GPS_H
-#define __GPS_H
+#ifndef GPS_HDR_H
+#define GPS_HDR_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -283,4 +283,4 @@ gps_float_t gps_to_speed(gps_float_t sik, gps_speed_t ts);
 }
 #endif /* __cplusplus */
 
-#endif /* __GPS_H */
+#endif /* GPS_HDR_H */
