@@ -461,8 +461,8 @@ gps_float_t
 gps_to_speed(gps_float_t sik, gps_speed_t ts) {
     switch (ts) {
         case gps_speed_kps:     return (gps_float_t)(sik * 0.000514L);
-        case gps_speed_kph:     return (gps_float_t)(sik * 0.5144L);
-        case gps_speed_mps:     return (gps_float_t)(sik * 1.852L);
+        case gps_speed_kph:     return (gps_float_t)(sik * 1.852L);
+        case gps_speed_mps:     return (gps_float_t)(sik * 0.5144L);
         case gps_speed_mpm:     return (gps_float_t)(sik * 30.87L);
 
         case gps_speed_mips:    return (gps_float_t)(sik * 0.0003197L);
