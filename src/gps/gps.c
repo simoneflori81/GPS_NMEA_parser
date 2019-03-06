@@ -34,7 +34,6 @@
 
 #include "math.h"
 #include "string.h"
-#include "stdio.h"
 #include "stdlib.h"
 
 #define FLT(x)              ((gps_float_t)(x))
@@ -95,7 +94,7 @@ parse_number(gps_t* gh, const char* t) {
  */
 static gps_float_t
 parse_float_number(gps_t* gh, const char* t) {
-    double res;
+    gps_float_t res;
 
     if (t == NULL) {
         t = gh->p.term_str;
@@ -104,7 +103,13 @@ parse_float_number(gps_t* gh, const char* t) {
     while (t != NULL && *t == ' ') {
         t++;
     }
+	
+#if GPS_CFG_DOUBLE
     res = strtod(t, NULL);                      /* Parse string to double */
+#else /* GPS_CFG_DOUBLE */
+    res = strtof(t, NULL);                      /* Parse string to float */
+#endif /* !GPS_CFG_DOUBLE */
+
     return FLT(res);                            /* Return casted value, based on float size */
 }
 
