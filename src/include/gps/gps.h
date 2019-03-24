@@ -200,29 +200,44 @@ typedef struct {
         uint8_t crc_calc;                       /*!< Calculated CRC string */
         
         union {
-            uint8_t dummy;
+            uint8_t dummy;                      /*!< Dummy byte */
 #if GPS_CFG_STATEMENT_GPGGA
             struct {
-                gps_float_t latitude, longitude, altitude;
-                uint8_t sats_in_use, fix, hours, minutes, seconds;
-            } gga;
+                gps_float_t latitude;           /*!< GPS latitude position in degrees */
+                gps_float_t longitude;          /*!< GPS longitude position in degrees */
+                gps_float_t altitude;           /*!< GPS altitude in meters */
+                uint8_t sats_in_use;            /*!< Number of satellites currently in use */
+                uint8_t fix;                    /*!< Type of current fix, `0` = Invalid, `1` = GPS fix, `2` = Differential GPS fix */
+                uint8_t hours;                  /*!< Current UTC hours */
+                uint8_t minutes;                /*!< Current UTC minutes */
+                uint8_t seconds;                /*!< Current UTC seconds */
+            } gga;                              /*!< GPGGA message */
 #endif /* GPS_CFG_STATEMENT_GPGGA */
 #if GPS_CFG_STATEMENT_GPGSA
             struct {
-                gps_float_t dop_h, dop_v, dop_p;
-                uint8_t fix_mode, satellites_ids[12];
-            } gsa;
+                gps_float_t dop_h;              /*!< Horizontal dilution of precision */
+                gps_float_t dop_v;              /*!< Vertical dilution of precision */
+                gps_float_t dop_p;              /*!< Position dilution of precision */
+                uint8_t fix_mode;               /*!< Fix mode, `1` = No fix, `2` = 2D fix, `3` = 3D fix */
+                uint8_t satellites_ids[12];     /*!< IDs of satellites currently in use */
+            } gsa;                              /*!< GPGSA message */
 #endif /* GPS_CFG_STATEMENT_GPGSA */
 #if GPS_CFG_STATEMENT_GPGSV
             struct {
-                uint8_t sats_in_view, stat_num;
-            } gsv;
+                uint8_t sats_in_view;           /*!< Number of stallites in view */
+                uint8_t stat_num;               /*!< Satellite line number during parsing GPGSV data */
+            } gsv;                              /*!< GPGSV message */
 #endif /* GPS_CFG_STATEMENT_GPGSV */
 #if GPS_CFG_STATEMENT_GPRMC
             struct {
-                uint8_t is_valid, date, month, year;
-                gps_float_t speed, coarse, variation;
-            } rmc;
+                uint8_t is_valid;               /*!< Status whether GPS status is valid or not */
+                uint8_t date;                   /*!< Current UTF date */
+                uint8_t month;                  /*!< Current UTF month */
+                uint8_t year;                   /*!< Current UTF year */
+                gps_float_t speed;              /*!< Current spead over the ground in knots */
+                gps_float_t coarse;             /*!< Current coarse made good */
+                gps_float_t variation;          /*!< Current magnetic variation in degrees */
+            } rmc;                              /*!< GPRMC message */
 #endif /* GPS_CFG_STATEMENT_GPRMC */
         } data;                                 /*!< Union with data for each information */
     } p;                                        /*!< Structure with private data */

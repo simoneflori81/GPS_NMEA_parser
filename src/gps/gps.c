@@ -278,6 +278,11 @@ parse_term(gps_t* gh) {
             case 10:                            /* Process magnetic variation */
                 gh->p.data.rmc.variation = parse_float_number(gh, NULL);
                 break;
+            case 11:                            /* Process magnetic variation east/west */
+                if (gh->p.term_str[0] == 'W' || gh->p.term_str[0] == 'w') {
+                    gh->p.data.rmc.variation = -gh->p.data.rmc.variation;
+                }
+                break;
             default: break;
         }
 #endif /* GPS_CFG_STATEMENT_GPRMC */
