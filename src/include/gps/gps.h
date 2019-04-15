@@ -153,6 +153,7 @@ typedef struct {
     gps_float_t latitude;                       /*!< Latitude in units of degrees */
     gps_float_t longitude;                      /*!< Longitude in units of degrees */
     gps_float_t altitude;                       /*!< Altitude in units of meters */
+    gps_float_t geo_sep;                        /*!< Geoid separation in units of meters */
     uint8_t sats_in_use;                        /*!< Number of satellites in use */
     uint8_t fix;                                /*!< Fix status. `0` = invalid, `1` = GPS fix, `2` = DGPS fix, `3` = PPS fix */
     uint8_t hours;                              /*!< Hours in UTC */
@@ -206,6 +207,7 @@ typedef struct {
                 gps_float_t latitude;           /*!< GPS latitude position in degrees */
                 gps_float_t longitude;          /*!< GPS longitude position in degrees */
                 gps_float_t altitude;           /*!< GPS altitude in meters */
+                gps_float_t geo_sep;            /*!< Geoid separation in units of meters */
                 uint8_t sats_in_use;            /*!< Number of satellites currently in use */
                 uint8_t fix;                    /*!< Type of current fix, `0` = Invalid, `1` = GPS fix, `2` = Differential GPS fix */
                 uint8_t hours;                  /*!< Current UTC hours */

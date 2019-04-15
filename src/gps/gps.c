@@ -199,7 +199,7 @@ parse_term(gps_t* gh) {
                 gh->p.data.gga.altitude = parse_float_number(gh, NULL);
                 break;
             case 11:                            /* Altitude above ellipsoid */
-                gh->p.data.gga.altitude += parse_float_number(gh, NULL);
+                gh->p.data.gga.geo_sep = parse_float_number(gh, NULL);
                 break;
             default: break;
         }
@@ -315,6 +315,7 @@ copy_from_tmp_memory(gps_t* gh) {
         gh->latitude = gh->p.data.gga.latitude;
         gh->longitude = gh->p.data.gga.longitude;
         gh->altitude = gh->p.data.gga.altitude;
+        gh->geo_sep = gh->p.data.gga.geo_sep;
         gh->sats_in_use = gh->p.data.gga.sats_in_use;
         gh->fix = gh->p.data.gga.fix;
         gh->hours = gh->p.data.gga.hours;
