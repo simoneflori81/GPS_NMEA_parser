@@ -26,7 +26,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  *
- * This file is part of GPS NMEA parser.
+ * This file is part of GPS NMEA parser library.
  *
  * Author:          Tilen MAJERLE <tilen@majerle.eu>
  */
@@ -75,13 +75,11 @@ parse_number(gps_t* gh, const char* t) {
     if (t == NULL) {
         t = gh->p.term_str;
     }
-    /* Strip leading spaces */
-    while (t != NULL && *t == ' ') {
-        t++;
-    }
+
+    for (; t != NULL && *t == ' '; t++) {}      /* Strip leading spaces */
     minus = (*t == '-' ? (t++, 1) : 0);
-    while (t != NULL && CIN(*t)) {
-        res = 10 * res + CTN(*t++);
+    for (; t != NULL && CIN(*t); t++) {
+        res = 10 * res + CTN(*t);
     }
     return minus ? -res : res;
 }
@@ -100,9 +98,7 @@ parse_float_number(gps_t* gh, const char* t) {
         t = gh->p.term_str;
     }
     /* Strip leading spaces */
-    while (t != NULL && *t == ' ') {
-        t++;
-    }
+    for (; t != NULL && *t == ' ', t++) {}
 	
 #if GPS_CFG_DOUBLE
     res = strtod(t, NULL);                      /* Parse string to double */

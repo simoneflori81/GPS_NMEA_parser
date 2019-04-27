@@ -26,7 +26,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  *
- * This file is part of GPS NMEA parser.
+ * This file is part of GPS NMEA parser library.
  *
  * Author:          Tilen MAJERLE <tilen@majerle.eu>
  */
@@ -54,9 +54,13 @@ extern "C" {
  */
 
 /* --- Buffer unique part starts --- */
-/* Prefix for all buffer functions and typedefs */
 /**
  * \brief           Buffer function/typedef prefix string
+ * 
+ * It is used to change function names in zero time to easily re-use same library between applications.
+ * Use `#define BUF_PREF(x)    my_prefix_ ## x` to change all function names to (for example) `my_prefix_buff_init` 
+ *
+ * \note            Modification of this macro must be done in header and source file aswell
  */
 #define BUF_PREF(x)                     gps_ ## x
 /* --- Buffer unique part ends --- */
