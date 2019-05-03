@@ -75,8 +75,8 @@ parse_number(gps_t* gh, const char* t) {
     if (t == NULL) {
         t = gh->p.term_str;
     }
-
     for (; t != NULL && *t == ' '; t++) {}      /* Strip leading spaces */
+
     minus = (*t == '-' ? (t++, 1) : 0);
     for (; t != NULL && CIN(*t); t++) {
         res = 10 * res + CTN(*t);
@@ -97,8 +97,7 @@ parse_float_number(gps_t* gh, const char* t) {
     if (t == NULL) {
         t = gh->p.term_str;
     }
-    /* Strip leading spaces */
-    for (; t != NULL && *t == ' '; t++) {}
+    for (; t != NULL && *t == ' '; t++) {}      /* Strip leading spaces */
 	
 #if GPS_CFG_DOUBLE
     res = strtod(t, NULL);                      /* Parse string to double */
@@ -121,9 +120,9 @@ parse_lat_long(gps_t* gh) {
     gps_float_t ll, deg, min;
 
     ll = parse_float_number(gh, NULL);          /* Parse value as double */
-    deg = ((int)ll) / FLT(100);                 /* Get absolute degrees value */
-    min = ll - (deg * FLT(100));                /* Get remaining part, minutes */
-    ll = deg + min / FLT(60.0);                 /* Calculate latitude/longitude */
+    deg = FLT((int)ll / 100);                   /* Get absolute degrees value, interested in integer part only */
+    min = ll - (deg * FLT(100));                /* Get remaining part from full number, minutes */
+    ll = deg + (min / FLT(60.0));               /* Calculate latitude/longitude */
     
     return ll;
 }
@@ -174,7 +173,7 @@ parse_term(gps_t* gh) {
                 break;
             case 3:                             /* Latitude north/south information */
                 if (gh->p.term_str[0] == 'S' || gh->p.term_str[0] == 's') {
-                    gh->p.data.gga.latitude = - gh->p.data.gga.latitude;
+                    gh->p.data.gga.latitude = -gh->p.data.gga.latitude;
                 }
                 break;
             case 4:                             /* Longitude */
@@ -182,7 +181,7 @@ parse_term(gps_t* gh) {
                 break;
             case 5:                             /* Longitude east/west information */
                 if (gh->p.term_str[0] == 'W' || gh->p.term_str[0] == 'w') {
-                    gh->p.data.gga.longitude = - gh->p.data.gga.longitude;
+                    gh->p.data.gga.longitude = -gh->p.data.gga.longitude;
                 }
                 break;
             case 6:                             /* Fix status */
