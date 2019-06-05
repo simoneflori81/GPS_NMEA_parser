@@ -72,13 +72,13 @@ parse_number(gps_t* gh, const char* t) {
     int32_t res = 0;
     uint8_t minus;
 
-    if (NULL == t) {
+    if (t == NULL) {
         t = gh->p.term_str;
     }
-    for (; NULL != t && *t == ' '; t++) {}      /* Strip leading spaces */
+    for (; t != NULL && *t == ' '; t++) {}      /* Strip leading spaces */
 
     minus = (*t == '-' ? (t++, 1) : 0);
-    for (; NULL != t && CIN(*t); t++) {
+    for (; t != NULL && CIN(*t); t++) {
         res = 10 * res + CTN(*t);
     }
     return minus ? -res : res;
@@ -94,10 +94,10 @@ static gps_float_t
 parse_float_number(gps_t* gh, const char* t) {
     gps_float_t res;
 
-    if (NULL == t) {
+    if (t == NULL) {
         t = gh->p.term_str;
     }
-    for (; NULL != t && *t == ' '; t++) {}      /* Strip leading spaces */
+    for (; t != NULL && *t == ' '; t++) {}      /* Strip leading spaces */
 	
 #if GPS_CFG_DOUBLE
     res = strtod(t, NULL);                      /* Parse string to double */
@@ -159,9 +159,9 @@ parse_term(gps_t* gh) {
     }
     
     /* Start parsing terms */
-    if (STAT_UNKNOWN == gh->p.stat) {
+    if (gh->p.stat == STAT_UNKNOWN) {
 #if GPS_CFG_STATEMENT_GPGGA
-    } else if (STAT_GGA == gh->p.stat) {        /* Process GPGGA statement */
+    } else if (gh->p.stat == STAT_GGA) {        /* Process GPGGA statement */
         switch (gh->p.term_num) {
             case 1:                             /* Process UTC time */
                 gh->p.data.gga.hours = 10 * CTN(gh->p.term_str[0]) + CTN(gh->p.term_str[1]);
@@ -172,7 +172,7 @@ parse_term(gps_t* gh) {
                 gh->p.data.gga.latitude = parse_lat_long(gh);   /* Parse latitude */
                 break;
             case 3:                             /* Latitude north/south information */
-                if ('S' == gh->p.term_str[0] || 's' == gh->p.term_str[0]) {
+                if (gh->p.term_str[0] == 'S' || gh->p.term_str[0] == 's') {
                     gh->p.data.gga.latitude = -gh->p.data.gga.latitude;
                 }
                 break;
@@ -180,7 +180,7 @@ parse_term(gps_t* gh) {
                 gh->p.data.gga.longitude = parse_lat_long(gh);  /* Parse longitude */
                 break;
             case 5:                             /* Longitude east/west information */
-                if ('W' == gh->p.term_str[0] || 'w' == gh->p.term_str[0]) {
+                if (gh->p.term_str[0] == 'W' || gh->p.term_str[0] == 'w') {
                     gh->p.data.gga.longitude = -gh->p.data.gga.longitude;
                 }
                 break;
@@ -200,7 +200,7 @@ parse_term(gps_t* gh) {
         }
 #endif /* GPS_CFG_STATEMENT_GPGGA */
 #if GPS_CFG_STATEMENT_GPGSA
-    } else if (STAT_GSA == gh->p.stat) {        /* Process GPGSA statement */
+    } else if (gh->p.stat == STAT_GSA) {        /* Process GPGSA statement */
         switch (gh->p.term_num) {
             case 2:                             /* Process fix mode */
                 gh->p.data.gsa.fix_mode = (uint8_t)parse_number(gh, NULL);
@@ -223,7 +223,7 @@ parse_term(gps_t* gh) {
         }
 #endif /* GPS_CFG_STATEMENT_GPGSA */
 #if GPS_CFG_STATEMENT_GPGSV
-    } else if (STAT_GSV == gh->p.stat) {        /* Process GPGSV statement */
+    } else if (gh->p.stat == STAT_GSV) {        /* Process GPGSV statement */
         switch (gh->p.term_num) {
             case 2:                             /* Current GPGSV statement number */
                 gh->p.data.gsv.stat_num = (uint8_t)parse_number(gh, NULL);
@@ -254,10 +254,10 @@ parse_term(gps_t* gh) {
         }
 #endif /* GPS_CFG_STATEMENT_GPGSV */
 #if GPS_CFG_STATEMENT_GPRMC
-    } else if (STAT_RMC == gh->p.stat) {        /* Process GPRMC statement */
+    } else if (gh->p.stat == STAT_RMC) {        /* Process GPRMC statement */
         switch (gh->p.term_num) {
             case 2:                             /* Process valid status */
-                gh->p.data.rmc.is_valid = 'A' == gh->p.term_str[0];
+                gh->p.data.rmc.is_valid = (gh->p.term_str[0] == 'A');
                 break;
             case 7:                             /* Process ground speed in knots */
                 gh->p.data.rmc.speed = parse_float_number(gh, NULL);
@@ -274,7 +274,7 @@ parse_term(gps_t* gh) {
                 gh->p.data.rmc.variation = parse_float_number(gh, NULL);
                 break;
             case 11:                            /* Process magnetic variation east/west */
-                if ('W' == gh->p.term_str[0] || 'w' == gh->p.term_str[0]) {
+                if (gh->p.term_str[0] == 'W' || gh->p.term_str[0] == 'w') {
                     gh->p.data.rmc.variation = -gh->p.data.rmc.variation;
                 }
                 break;
@@ -366,18 +366,18 @@ gps_process(gps_t* gh, const void* data, size_t len) {
     const uint8_t* d = data;
 
     while (len--) {                             /* Process all bytes */
-        if ('$' == *d) {                        /* Check for beginning of NMEA line */
+        if (*d == '$') {                        /* Check for beginning of NMEA line */
             memset(&gh->p, 0x00, sizeof(gh->p));/* Reset private memory */
             TERM_ADD(gh, *d);                   /* Add character to term */     
-        } else if (',' == *d) {                 /* Term separator character */
+        } else if (*d == ',') {                 /* Term separator character */
             parse_term(gh);                     /* Parse term we have currently in memory */
             CRC_ADD(gh, *d);                    /* Add character to CRC computation */
             TERM_NEXT(gh);                      /* Start with next term */
-        } else if ('*' == *d) {                 /* Start indicates end of data for CRC computation */
+        } else if (*d == '*') {                 /* Start indicates end of data for CRC computation */
             parse_term(gh);                     /* Parse term we have currently in memory */
             gh->p.star = 1;                     /* STAR detected */
             TERM_NEXT(gh);                      /* Start with next term */
-        } else if ('\r' == *d) {
+        } else if (*d == '\r') {
             if (check_crc(gh)) {                /* Check for CRC result */
                 /* CRC is OK, in theory we can copy data from statements to user data */
                 copy_from_tmp_memory(gh);       /* Copy memory from temporary to user memory */
@@ -407,7 +407,7 @@ uint8_t
 gps_distance_bearing(gps_float_t las, gps_float_t los, gps_float_t lae, gps_float_t loe, gps_float_t* d, gps_float_t* b) {
     gps_float_t df, dfi, a;
 
-    if (NULL == d && NULL == b) {
+    if (d == NULL && b == NULL) {
         return 0;
     }
 
@@ -424,7 +424,7 @@ gps_distance_bearing(gps_float_t las, gps_float_t los, gps_float_t lae, gps_floa
      *
      * Calculated distance is absolute value in meters between 2 points on earth.
      */
-    if (NULL != d) {
+    if (d != NULL) {
         /*
          * a = sin(df / 2)^2 + cos(las) * cos(lae) * sin(dfi / 2)^2
          * *d = RADIUS * 2 * atan(a / (1 - a)) * 1000 (for meters)
@@ -451,7 +451,7 @@ gps_distance_bearing(gps_float_t las, gps_float_t los, gps_float_t lae, gps_floa
      *      Bearing is 180 => move to south
      *      Bearing is 270 => move to west
      */
-    if (NULL != b) {
+    if (b != NULL) {
 #if GPS_CFG_DOUBLE
         df = FLT(sin(loe - los) * cos(lae));
         dfi = FLT(cos(las) * sin(lae) - sin(las) * cos(lae) * cos(loe - los));
