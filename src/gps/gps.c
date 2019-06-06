@@ -134,7 +134,7 @@ parse_lat_long(gps_t* gh) {
  */
 static uint8_t
 parse_term(gps_t* gh) {
-    if (!gh->p.term_num) {                      /* Check string type */
+    if (gh->p.term_num == 0) {                  /* Check string type */
         if (0) {
 #if GPS_CFG_STATEMENT_GPGGA
         } else if (!strncmp(gh->p.term_str, "$GPGGA", 6) || !strncmp(gh->p.term_str, "$GNGGA", 6)) {
