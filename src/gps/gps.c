@@ -32,8 +32,8 @@
  */
 #include "gps/gps.h"
 
-#include "math.h"
-#include "string.h"
+#include <math.h>
+#include <string.h>
 #include "stdlib.h"
 
 #define FLT(x)              ((gps_float_t)(x))
