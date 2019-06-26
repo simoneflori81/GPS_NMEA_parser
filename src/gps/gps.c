@@ -120,7 +120,7 @@ parse_lat_long(gps_t* gh) {
     gps_float_t ll, deg, min;
 
     ll = parse_float_number(gh, NULL);          /* Parse value as double */
-    deg = FLT((int)ll / 100);                   /* Get absolute degrees value, interested in integer part only */
+    deg = FLT((int)((int)ll / 100));            /* Get absolute degrees value, interested in integer part only */
     min = ll - (deg * FLT(100));                /* Get remaining part from full number, minutes */
     ll = deg + (min / FLT(60.0));               /* Calculate latitude/longitude */
     
