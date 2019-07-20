@@ -381,3 +381,4 @@ template/
 project.ioc
 mx.scratch
 *.tilen majerle
+/nmea_parser_sf
